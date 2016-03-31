@@ -5,7 +5,8 @@
   "description": "a Sails application",
   "keywords": [],
   "scripts": {
-      "start": "node app.js"
+    "debug": "node debug app.js",
+    "start": "node app.js"
   },
   "dependencies": {
     "ejs": "2.3.4",
@@ -26,15 +27,14 @@
     "sails": "~0.12.1",
     "sails-disk": "~0.10.9"
   },
-  "scripts": {
-    "debug": "node debug app.js",
-    "start": "node app.js"
-  },
   "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/marcopeg/foo.git"
   },
   "author": "marcopeg",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "sails-hook-autoreload": "^0.13.1"
+  }
 }
