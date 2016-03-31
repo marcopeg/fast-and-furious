@@ -15,7 +15,6 @@ module.exports = {
 
 function find(req, res) {
 	Cars.find(makeFindAllConditions(req))
-		.then(handleQueryLimit(req, res))
 		.then(handleQueryFields(req, res))
 		.then(sendResponse(req, res))
 		.catch(err => res.serverError(err));
@@ -32,6 +31,14 @@ function findOne(req, res) {
 function makeFindAllConditions(req) {
 	var query = {};
 
+	if (req.query.limit) {
+		query.limit = req.query.limit;
+	}
+
+	if (req.query.offset) {
+		query.skip = req.query.offset;
+	}
+
 	try {
 		query.where = JSON.parse(req.query.filter);
 	} catch(e) {}
@@ -44,14 +51,6 @@ function handleQueryFields(req, res) {
 		return cars.map(car => {
 			return jsonMask(car, req.query.fields);
 		});
-	};
-}
-
-function handleQueryLimit(req, res) {
-	return cars => {
-		var offset = parseInt(req.query.offset || 0);
-		var limit = parseInt(req.query.limit || cars.length) + offset;
-		return cars.slice(offset, limit);
 	};
 }
 
