@@ -15,6 +15,7 @@ module.exports = {
 
 function find(req, res) {
 	Cars.find()
+	.then(handleQueryLimit(req, res))
 	.then(handleQueryFields(req, res))
 	.then(sendResponse(req, res))
 	.catch(err => res.serverError(err));
@@ -41,6 +42,13 @@ function handleQueryFields(req, res) {
 		return cars.map(car => {
 			return jsonMask(car, req.query.fields);
 		});
+	};
+}
+
+function handleQueryLimit(req, res) {
+	return cars => {
+		var limit = req.query.limit || cars.length;
+		return cars.slice(0, limit);
 	};
 }
 
