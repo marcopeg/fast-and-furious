@@ -47,8 +47,9 @@ function handleQueryFields(req, res) {
 
 function handleQueryLimit(req, res) {
 	return cars => {
-		var limit = req.query.limit || cars.length;
-		return cars.slice(0, limit);
+		var offset = parseInt(req.query.offset || 0);
+		var limit = parseInt(req.query.limit || cars.length) + offset;
+		return cars.slice(offset, limit);
 	};
 }
 
