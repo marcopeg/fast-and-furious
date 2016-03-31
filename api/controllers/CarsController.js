@@ -5,23 +5,55 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var _findOne = require('../services/find-one');
+var jsonMask = require('json-mask');
+
 
 module.exports = {
+	find: find,
 	findOne: findOne,
 };
 
+function find(req, res) {
+	Cars.find()
+	.then(handleQueryFields(req, res))
+	.then(sendResponse(req, res))
+	.catch(err => res.serverError(err));
+}
+
 function findOne(req, res) {
 	Cars
-		.find(_findOne.makePayload(req, res))
-		.then(_findOne.handleResults(req, res))
+		.find(makeFindOnePayload(req, res))
 		.then(handleQueryFields(req, res))
-		.then(_findOne.sendResults(req, res))
+		.then(sendResponse(req, res, true))
 		.catch(err => res.serverError(err));
 }
 
+function makeFindOnePayload(req, res) {
+	return {
+		where: {
+			id: req.param('id'),
+		},
+	};
+}
+
 function handleQueryFields(req, res) {
-    return () => {
-        console.log('QUERY', req.query);
-    };
+	return cars => {
+		return cars.map(car => {
+			return jsonMask(car, req.query.fields);
+		});
+	};
+}
+
+function sendResponse(req, res, singleResult) {
+	return cars => {
+		if (cars.length) {
+			if (singleResult) {
+				res.send(cars.shift());
+			} else {
+				res.send(cars);
+			}
+		} else {
+			res.notFound();
+		}
+	};
 }
