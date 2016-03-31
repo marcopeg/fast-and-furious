@@ -14,27 +14,29 @@ module.exports = {
 };
 
 function find(req, res) {
-	Cars.find()
-	.then(handleQueryLimit(req, res))
-	.then(handleQueryFields(req, res))
-	.then(sendResponse(req, res))
-	.catch(err => res.serverError(err));
+	Cars.find(makeFindAllConditions(req))
+		.then(handleQueryLimit(req, res))
+		.then(handleQueryFields(req, res))
+		.then(sendResponse(req, res))
+		.catch(err => res.serverError(err));
 }
 
 function findOne(req, res) {
 	Cars
-		.find(makeFindOnePayload(req, res))
+		.find({ id: req.param('id') })
 		.then(handleQueryFields(req, res))
 		.then(sendResponse(req, res, true))
 		.catch(err => res.serverError(err));
 }
 
-function makeFindOnePayload(req, res) {
-	return {
-		where: {
-			id: req.param('id'),
-		},
-	};
+function makeFindAllConditions(req) {
+	var query = {};
+
+	try {
+		query.where = JSON.parse(req.query.filter);
+	} catch(e) {}
+
+	return query;
 }
 
 function handleQueryFields(req, res) {
