@@ -3,6 +3,7 @@ var jsonMask = require('json-mask');
 
 module.exports = {
     makeFindAllConditions: makeFindAllConditions,
+    makeFindOneConditions: makeFindOneConditions,
     handleQueryFields: handleQueryFields,
     sendResults: sendResults,
 };

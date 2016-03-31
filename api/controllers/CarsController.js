@@ -13,15 +13,20 @@ module.exports = {
 };
 
 function find(req, res) {
-	Cars.find(carsService.makeFindAllConditions(req))
+	var query = carsService.makeFindAllConditions(req);
+	sails.log.info('cars/search', query);
+
+	Cars.find(query)
 		.then(carsService.handleQueryFields(req, res))
 		.then(carsService.sendResults(req, res))
 		.catch(err => res.serverError(err));
 }
 
 function findOne(req, res) {
-	Cars
-		.find(carsService.makeFindOneConditions(req))
+	var query = carsService.makeFindOneConditions(req);
+	sails.log.info('cars/search', query);
+
+	Cars.find(query)
 		.then(carsService.handleQueryFields(req, res))
 		.then(carsService.sendResults(req, res))
 		.catch(err => res.serverError(err));
